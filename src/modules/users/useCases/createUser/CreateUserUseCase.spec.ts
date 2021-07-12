@@ -1,6 +1,7 @@
 import { CreateUserUseCase } from "./CreateUserUseCase";
 import {InMemoryUsersRepository} from "../../repositories/in-memory/InMemoryUsersRepository"
 import { CreateUserError } from "./CreateUserError";
+import { ICreateUserDTO } from "./ICreateUserDTO";
 
 
 let createUserUseCase: CreateUserUseCase;
@@ -13,7 +14,7 @@ describe("Create User", ()=> {
   });
 
   it("should be able to create a new user", async () => {
-    const user = await createUserUseCase.execute({
+    const user: ICreateUserDTO = await createUserUseCase.execute({
       email: "email@test.com",
       name: "User Test",
       password: "password"

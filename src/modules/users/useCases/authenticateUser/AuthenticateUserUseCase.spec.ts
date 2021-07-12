@@ -3,6 +3,7 @@ import { CreateUserUseCase } from "../createUser/CreateUserUseCase"
 import { ICreateUserDTO } from "../createUser/ICreateUserDTO"
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase"
 import { IAuthenticateUserResponseDTO } from "./IAuthenticateUserResponseDTO"
+import { IncorrectEmailOrPasswordError } from "./IncorrectEmailOrPasswordError"
 
 
 let authenticateUserUseCase: AuthenticateUserUseCase
@@ -34,5 +35,34 @@ describe("Authenticate User", () => {
     })
 
     expect(logon).toHaveProperty("token");
+  });
+
+
+  it("should be not able to authenticate a invalid user", () => {
+
+    expect(async () => {
+      await authenticateUserUseCase.execute({
+        email: "Invalid User",
+        password: "No Password"
+      });
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+
+
+  it("should be not able to authenticate a invalid password", async() => {
+    const user : ICreateUserDTO = {
+      email: "user_email@test.com",
+      name: "New User Test",
+      password: "password"
+    }
+
+    await createUserUseCase.execute(user);
+
+    expect(async () => {
+      await authenticateUserUseCase.execute({
+        email: user.email,
+        password: "No Password"
+      });
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
   });
 })
